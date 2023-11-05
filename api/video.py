@@ -1,14 +1,18 @@
-from fastapi import FastAPI
-from faster_whisper import WhisperModel, decode_audio
 from moviepy.editor import VideoFileClip
-from urllib.parse import urlparse
-from tempfile import NamedTemporaryFile
-import requests
 import os
 
+def extract_audio_from_video(file_path):
+    # Create a VideoFileClip object
+    clip = VideoFileClip(file_path)
 
-def extract_audio_from_video(video_path):
-    clip = VideoFileClip(video_path)
-    audio_path = f"uploads/{clip.filename}.mp3"
+    # Extract the filename (without directories) from file_path
+    file_name = os.path.basename(file_path)
+
+    # Create the audio_path using the extracted file_name
+    audio_path = "uploads/" + file_name + ".mp3"
+
+    # Write the audio file
     clip.audio.write_audiofile(audio_path)
+    
     return audio_path
+
