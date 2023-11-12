@@ -31,20 +31,25 @@ async def transcribe_audio(file_url: str):
     file_name = os.path.basename(parsed_url.path)
 
     # Check if the file extension is supported
-    allowed_extensions = [".mp4", ".mp3", ".ogg", ".wav", ".mov"]
+    allowed_extensions = [".mp4", ".mp3", ".ogg", ".wav", ".mov", "webm"]
     if not any(file_name.endswith(ext) for ext in allowed_extensions):
         return {"error": "Unsupported file format"}
 
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+    }
     # Download the file from the URL
-    r = requests.get(file_url)
+    r = requests.get(file_url, headers=headers)
+    print(r)
     if r.status_code != 200:
+        print(r.__dict__)
         return {"error": "Error downloading file"}
 
     # Save the downloaded file to disk
     with NamedTemporaryFile(delete=False, suffix=file_name) as f:
         f.write(r.content)
     file_path = f.name
-    if file_name.endswith(".mp4") or file_name.endswith(".mov"):
+    if file_name.endswith(".mp4") or file_name.endswith(".mov") or file_name.endswith(".webm") :
         # check if the uploads directory exist if not create one
         if not os.path.exists('uploads'):
             os.makedirs('uploads')
